@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipe Engine | Defumados v2.0</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+  <div class="slider">
+
+    <!-- TELA 1 -->
+    <section class="screen active inicio">
+      <img src="LOGO_RECIPE_ENGINE-removebg-preview - cópia.png" class="logo">
+      <h1 class="titulo-sistema">
+        Recipe Engine<br>
+        <span>Defumados</span>
+      </h1>
+      <p class="subtitulo-sistema">
+        Inteligência aplicada à arte da defumação
+      </p>
+      <button class="btn primary" onclick="nextScreen()">Entrar</button>
+    </section>
+
+    <!-- TELA 2 -->
+    <section class="screen">
+      <h2>Responsável pela produção</h2>
+      <input type="text" id="responsavel" placeholder="Digite o nome">
+      <button class="btn primary" onclick="nextScreen()">Continuar</button>
+      <button class="btn secondary" onclick="irInicio()">Início</button>
+    </section>
+
+    <!-- TELA 3 -->
+    <section class="screen">
+      <h2>Gerar Receita</h2>
+
+      <button class="btn secondary" onclick="abrirHistorico()">📜 Histórico</button>
+      <button class="btn secondary" onclick="irInicio()">Início</button>
+
+      <select id="tipoProduto">
+        <option value="">Selecione o produto</option>
+        <option value="panceta">Panceta Defumada</option>
+        <option value="copa">Copa Lombo Defumada</option>
+        <option value="frango">Frango Defumado</option>
+        <option value="relish">Relish</option>
+      </select>
+
+      <input type="number" id="peso" placeholder="Peso da proteína ou pepino (kg)">
+
+      <button class="btn primary" onclick="gerarReceita()">Gerar Receita</button>
+    </section>
+
+    <!-- TELA 4 -->
+    <section class="screen">
+      <div class="loader"></div>
+      <p class="loading-text">
+        Calculando receita...<br>
+        <span>Padronização Schetini</span>
+      </p>
+    </section>
+
+    <!-- TELA 5 -->
+    <section class="screen">
+      <h2>Receita Gerada</h2>
+      <div id="resultado"></div>
+      <button class="btn secondary" onclick="novaReceita()">Nova Receita</button>
+      <button class="btn secondary" onclick="irInicio()">Início</button>
+    </section>
+
+    <!-- TELA 6 -->
+    <section class="screen">
+      <h2>Histórico de Receitas</h2>
+      <div id="listaHistorico"></div>
+      <button class="btn secondary" onclick="voltar()">Voltar</button>
+    </section>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+<footer class="rodape-sistema">
+  ©2026 MS TECHNOLOGY - Recipe Engine Defumados v2.0
+</footer>
+
+</body>
+</html>
