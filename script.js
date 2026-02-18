@@ -188,3 +188,4 @@ function verReceita(index) {
   telaAtual = 4;
   slider.style.transform = `translateX(-${telaAtual * 100}vw)`;
 }
+
