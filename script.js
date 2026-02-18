@@ -25,10 +25,32 @@ function voltar() {
 }
 
 /*********************************
- FUNÇÃO FORMATAR
+ FORMATADORES
 *********************************/
-function formatarGramas(valor) {
-  return valor.toFixed(2) + " g";
+function formatarPeso(g) {
+
+  // Se for 1kg ou mais → mostrar em kg com 3 casas
+  if (g >= 1000) {
+    return (g / 1000).toFixed(3) + " kg";
+  }
+
+  // Se for gramas
+  if (Number.isInteger(g)) {
+    return g + " g"; // remove .0
+  }
+
+  return parseFloat(g.toFixed(1)) + " g";
+}
+
+function formatarLitros(litros) {
+
+  // Se for número inteiro → sem decimal
+  if (Number.isInteger(litros)) {
+    return litros + " L";
+  }
+
+  // Se tiver decimal real → remove zeros desnecessários
+  return parseFloat(litros.toFixed(3)) + " L";
 }
 
 /*********************************
@@ -49,81 +71,107 @@ function gerarReceita() {
 
   setTimeout(() => {
 
-    let totalGramas = pesoKg * 1000;
-    let html = `<h3>${tipo.toUpperCase()} (${pesoKg} kg)</h3>
-    <table>
-    <tr><th>Ingrediente</th><th>Quantidade</th></tr>`;
+    const pesoProteinaG = pesoKg * 1000;
+    let totalReceitaG = pesoProteinaG;
 
-    function add(nome, valorPorKg) {
-      const qtd = valorPorKg * pesoKg;
-      totalGramas += qtd;
-      html += `<tr><td>${nome}</td><td class="qtd">${formatarGramas(qtd)}</td></tr>`;
+    let html = `
+      <h3>${tipo.toUpperCase()} (${pesoKg} kg)</h3>
+      <table>
+        <tr>
+          <th>Ingrediente</th>
+          <th>Quantidade</th>
+        </tr>
+    `;
+
+    function addPercentual(nome, percentual) {
+      const qtd = pesoProteinaG * (percentual / 100);
+      totalReceitaG += qtd;
+      html += `<tr><td>${nome}</td><td class="qtd">${formatarPeso(qtd)}</td></tr>`;
     }
 
+    /* =========================
+       PANCETA DEFUMADA
+    ========================= */
     if (tipo === "panceta") {
 
-      add("Sal", 2);
-      add("Cura", 0.25);
-      add("Açúcar mascavo", 0.5);
-      add("Pimenta calabresa", 0.1);
+      addPercentual("Sal", 2);
+      addPercentual("Cura", 0.25);
+      addPercentual("Açúcar mascavo", 0.5);
+      addPercentual("Pimenta calabresa", 0.1);
 
-      const newCor = (totalGramas / 1000) * 2.5;
-      totalGramas += newCor;
-      html += `<tr><td>New Cor</td><td class="qtd">${formatarGramas(newCor)}</td></tr>`;
+      const newCor = (totalReceitaG / 1000) * 2.5;
+      totalReceitaG += newCor;
 
+      html += `<tr><td>New Cor</td><td class="qtd">${formatarPeso(newCor)}</td></tr>`;
     }
 
+    /* =========================
+       COPA LOMBO DEFUMADA
+    ========================= */
     if (tipo === "copa") {
 
-      add("Sal", 2.5);
-      add("Cura", 0.25);
-      add("Pimenta do reino", 0.2);
-      add("Açúcar demerara", 0.5);
-      add("Salsa desidratada", 0.15);
-      add("Alho em pó", 0.15);
+      addPercentual("Sal", 2.5);
+      addPercentual("Cura", 0.25);
+      addPercentual("Pimenta do reino", 0.2);
+      addPercentual("Açúcar demerara", 0.5);
+      addPercentual("Salsa desidratada", 0.15);
+      addPercentual("Alho em pó", 0.15);
 
-      const newItem = (totalGramas / 1000) * 0.25;
-      totalGramas += newItem;
-      html += `<tr><td>New</td><td class="qtd">${formatarGramas(newItem)}</td></tr>`;
+      const newItem = (totalReceitaG / 1000) * 2.5;
+      totalReceitaG += newItem;
 
+      html += `<tr><td>New Cor</td><td class="qtd">${formatarPeso(newItem)}</td></tr>`;
     }
 
+    /* =========================
+       FRANGO DEFUMADO
+    ========================= */
     if (tipo === "frango") {
 
-      add("Pimenta do reino", 0.4);
-      add("Sal", 4);
-      add("Cura", 0.25);
-      add("Açúcar mascavo", 3);
+      addPercentual("Pimenta do reino", 0.4);
+      addPercentual("Sal", 4);
+      addPercentual("Cura", 0.25);
+      addPercentual("Açúcar mascavo", 3);
 
+      // ❌ não entra New Cor
     }
 
-    if (tipo === "relish") {
+    /* =========================
+       RELISH (MANTIDO)
+    ========================= */
+/* =========================
+   RELISH – NOVA REGRA (1kg)
+========================= */
+if (tipo === "relish") {
 
-      const fator = (pesoKg * 1000) / 900;
+  const fator = pesoKg; // 1 receita = 1kg de pepino
 
-      html += `<tr><th colspan="2">ETAPA 1</th></tr>`;
-      html += `<tr><td>Sal</td><td class="qtd">${formatarGramas(35 * fator)}</td></tr>`;
-      html += `<tr><td>Cebola</td><td class="qtd">${formatarGramas(125 * fator)}</td></tr>`;
-      html += `<tr><td>Pimenta dedo de moça</td><td class="qtd">${formatarGramas(10 * fator)}</td></tr>`;
+  html += `<tr><th colspan="2">ETAPA 1</th></tr>`;
 
-      html += `<tr><th colspan="2">ETAPA 2</th></tr>`;
-      html += `<tr><td>Açúcar</td><td class="qtd">${formatarGramas(280 * fator)}</td></tr>`;
-      html += `<tr><td>Vinagre de maçã</td><td class="qtd">${(300 * fator).toFixed(2)} ml</td></tr>`;
-      html += `<tr><td>Alho</td><td class="qtd">${formatarGramas(4 * fator)}</td></tr>`;
-      html += `<tr><td>Açafrão</td><td class="qtd">Proporcional</td></tr>`;
-      html += `<tr><td>Coentro em grão</td><td class="qtd">Proporcional</td></tr>`;
-      html += `<tr><td>Mostarda em grão</td><td class="qtd">Proporcional</td></tr>`;
+  html += `<tr><td>Sal</td><td class="qtd">${formatarPeso(35 * fator)}</td></tr>`;
+  html += `<tr><td>Cebola</td><td class="qtd">${formatarPeso(125 * fator)}</td></tr>`;
+  html += `<tr><td>Pimenta dedo de moça (sem semente)</td><td class="qtd">${formatarPeso(10 * fator)}</td></tr>`;
 
-      totalGramas = pesoKg * 1000;
+  html += `<tr><th colspan="2">ETAPA 2</th></tr>`;
 
-    }
+  html += `<tr><td>Açúcar</td><td class="qtd">${formatarPeso(280 * fator)}</td></tr>`;
+  const litrosVinagre = (300 * fator) / 1000;
+  html += `<tr><td>Vinagre de maçã</td><td class="qtd">${formatarLitros(litrosVinagre)}</td></tr>`;
+  html += `<tr><td>Alho</td><td class="qtd">${formatarPeso(4 * fator)}</td></tr>`;
+  html += `<tr><td>Açafrão</td><td class="qtd">${(0.5 * fator)} colheres de café</td></tr>`;
+  html += `<tr><td>Coentro em grão</td><td class="qtd">${(1 * fator)} colheres de café</td></tr>`;
+  html += `<tr><td>Mostarda em grão</td><td class="qtd">${(1 * fator)} colheres de café</td></tr>`;
+
+  totalReceitaG = pesoKg * 1000;
+}
 
     html += `
       <tr>
-        <th>Peso total estimado</th>
-        <th>${(totalGramas/1000).toFixed(2)} kg</th>
+        <th>Peso total da receita</th>
+        <th>${(totalReceitaG / 1000).toFixed(2)} kg</th>
       </tr>
-    </table>`;
+    </table>
+    `;
 
     document.getElementById("resultado").innerHTML = html;
 
@@ -137,7 +185,7 @@ function gerarReceita() {
 
     nextScreen();
 
-  }, 1500);
+  }, 1200);
 }
 
 /*********************************
@@ -188,4 +236,3 @@ function verReceita(index) {
   telaAtual = 4;
   slider.style.transform = `translateX(-${telaAtual * 100}vw)`;
 }
-
